@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" id="viewport" charset="UTF-8" content="width=device-width, initial-scale=0.5, maximum-scale=0.5">
+    <title>2019</title>
+    <script src="../js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+    <link rel="stylesheet" href="../css/style.css" type="text/css"/>
+    <script src="../js/index.js"></script>
+    <script type="text/javascript">
+
+
+//           //
+//           // 平台、设备和操作系统
+//           var system ={
+//               win : false,
+//               mac : false,
+//               xll : false
+//           };
+//           //检测平台
+//           var p = navigator.platform;
+//           system.win = p.indexOf("Win") == 0;
+//           system.mac = p.indexOf("Mac") == 0;
+//           system.x11 = (p == "X11") || (p.indexOf("Linux") == 0);
+//           //跳转语句
+//           if(system.win||system.mac||system.xll){//转向后台登陆页面
+//               window.location.href = "/pc";
+//           }else{
+//               console.log("移动端");
+//           }
+
+        $(document).ready(function() {
+            var currurl = decodeURIComponent(location.href.split('#')[0]);
+            //ajax注入权限验证
+            $.ajax({
+                url : "/initWXJSInterface",
+                dataType : 'json',
+                data : {
+                    'url' : currurl
+                },
+                complete : function(XMLHttpRequest, textStatus) {},
+                error : function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert("发生错误：" + errorThrown);
+                },
+                success : function(res) {
+                    var appId = res.appId;
+                    var nonceStr = res.nonceStr;
+                    var timestamp = res.timestamp;
+                    var signature = res.signature;
+                    wx.config({
+                        debug : false, //开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                        appId : appId, //必填，公众号的唯一标识
+                        timestamp : timestamp, // 必填，生成签名的时间戳
+                        nonceStr : nonceStr, //必填，生成签名的随机串
+                        signature : signature, // 必填，签名，见附录1
+                        jsApiList : [ 'onMenuShareAppMessage', 'onMenuShareTimeline' ] //必填，需要使用的JS接口列表，所有JS接口列表 见附录2
+                    }); // end wx.config
+
+                    wx.ready(function() {
+                        // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+                        /*
+                        wx.checkJsApi({
+                            jsApiList : [ 'onMenuShareAppMessage' ], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+                            success : function(res) {
+                                // 以键值对的形式返回，可用的api值true，不可用为false
+                                // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+                                alert(res.checkResult);
+                                alert(res.errMsg);
+                            }
+                        }); // end checkJsApi
+                         */
+                        // alert('ready');
+                        wx.onMenuShareAppMessage({
+                            title : '一个字总结你的2019', // 分享标题
+                            desc : '2019年即将过去，你会用哪个字来总结呢？', // 分享描述
+                            link : currurl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                            imgUrl : currurl+'/imgs/share.png', // 分享图标
+                            success : function() {
+                                // 用户确认分享后执行的回调函数
+                                // alert('share successful');
+                            },
+                            cancel : function() {
+                                // 用户取消分享后执行的回调函数
+                                // alert('share cancel');
+                            }
+                        }); // end onMenuShareAppMessage
+
+                        wx.onMenuShareTimeline({
+                            title : '一个字总结你的2019', // 分享标题
+                            link : currurl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                            imgUrl : currurl+'/imgs/share.png', // 分享图标
+                            success : function() {
+                                // 用户确认分享后执行的回调函数
+                            },
+                            cancel : function() {
+                                // 用户取消分享后执行的回调函数
+                            }
+                        }); // end onMenuShareTimeline
+                    }); // end ready
+
+                    wx.error(function(res) {
+                        // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+                        // alert('error');
+                    });
+                } // end success
+            }); // end ajax
+        });  // end document
+    </script>
+    <style>
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .tip {
+            position: absolute;
+            animation:heartbeat 1s infinite;
+            -webkit-animation:heartbeat 1s infinite;
+            top: 3%;
+            width: 70%;
+            left: 15.5%;
+            z-index: 6;
+            display: none;
+        }
+
+        .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+
+        .page1 .ipt_txt .name {
+            position: absolute;
+            top: 47%;
+            left: 24.5%;
+            font-size: 2em;
+        }
+
+        .page1 .ipt_txt .type{
+            position: absolute;
+            width: 60%;
+            height: auto;
+            top: 62%;
+            left: 41%;
+            font-size: 2em;
+        }
+
+        .page1 .ipt_txt .name_txt.name {
+            top: 47%;
+            width: 45%;
+            left: 27%;
+            height: 70px;
+            border: 1px solid #898989;
+            line-height: 47px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .page1 .ipt_txt .name_txt.type {
+            top: 61%;
+            width: 17%;
+            height: 120px;
+            border: 1px solid #898989;
+            line-height: 47px;
+            text-align: center;
+        }
+
+
+        .page1 .ipt_txt .error.type{
+            width: 29%;
+            top: 72%;
+            left: 36%;
+            text-align: center;
+            color: #c80a28;
+            padding: 5px 0;
+            display: inline-block;
+            display: none;
+        }
+
+        .page1 .ipt_txt .error.name {
+            width: 53%;
+            top:53%;
+            text-align: center;
+            color: #c80a28;
+            padding: 5px 0;
+            display: inline-block;
+            display: none;
+        }
+
+        .page1 .gene_btn {
+            width: 32%;
+            position: absolute;
+            color: white;
+            border-radius: 10px;
+            top: 77%;
+            left: 36%;
+            background-size: cover;
+        }
+
+        .result{
+            position: absolute;
+            top: -5%;
+            width: 100%;
+            display: block;
+        }
+
+        /* loading css style*/
+        .spinner {
+            margin: 100px auto;
+            width: 50px;
+            height: 60px;
+            text-align: center;
+            font-size: 10px;
+            display: none;
+        }
+
+        .spinner > div {
+            background-color: #67CF22;
+            height: 100%;
+            width: 6px;
+            display: inline-block;
+
+            -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+            animation: stretchdelay 1.2s infinite ease-in-out;
+        }
+
+        .spinner .rect2 {
+            -webkit-animation-delay: -1.1s;
+            animation-delay: -1.1s;
+        }
+
+        .spinner .rect3 {
+            -webkit-animation-delay: -1.0s;
+            animation-delay: -1.0s;
+        }
+
+        .spinner .rect4 {
+            -webkit-animation-delay: -0.9s;
+            animation-delay: -0.9s;
+        }
+
+        .spinner .rect5 {
+            -webkit-animation-delay: -0.8s;
+            animation-delay: -0.8s;
+        }
+
+        @-webkit-keyframes stretchdelay {
+            0%, 40%, 100% { -webkit-transform: scaleY(0.4) }
+            20% { -webkit-transform: scaleY(1.0) }
+        }
+
+        @keyframes stretchdelay {
+            0%, 40%, 100% {
+                transform: scaleY(0.4);
+                -webkit-transform: scaleY(0.4);
+            }  20% {
+                   transform: scaleY(1.0);
+                   -webkit-transform: scaleY(1.0);
+               }
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform:scale(0.8,0.8);
+                opacity:1;
+            }
+            25% {
+                transform:scale(1,1);
+                opacity:0.8;
+            }
+            100% {
+                transform:scale(0.8,0.8);
+                opacity:1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="main">
+    <img src="../imgs/tip.png" class="tip"/>
+    <img src="../imgs/2background.png" class="back"/>
+
+    <div class="page1">
+        <div class="ipt_txt name">
+            <input id="input_name" type="text" class="name_txt name" placeholder="请输入姓名1~10个字" maxlength="10" autofocus/>
+            <div class="error name">请输入姓名1~10个中文</div>
+        </div>
+        <div class="ipt_txt type">
+            <input id="input_type" type="text" class="name_txt type" maxlength="1" autofocus/>
+            <div class="error type">请输入1个中文</div>
+        </div>
+        <img class="gene_btn" src="../imgs/2btn.png">
+    </div>
+    <div class="spinner">
+        <div class="rect1"></div>
+        <div class="rect2"></div>
+        <div class="rect3"></div>
+        <div class="rect4"></div>
+        <div class="rect5"></div>
+    </div>
+    <img class="result"/>
+</div>
+</body>
+<script>
+    document.body.addEventListener('focusout', function () {
+        window.scroll(0,0);//失焦后强制让页面归位
+
+    })
+</script>
+</html>
